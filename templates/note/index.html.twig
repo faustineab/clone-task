@@ -2,8 +2,7 @@
 
 {% block body %}
 
-{{ render(controller('App\\Controller\\NoteController::new')) }}
-{{ render(controller('App\\Controller\\LabelController::new')) }}
+{{ render(path('note_new')) }}
 
 {% include "note/_list.html.twig" %}
 

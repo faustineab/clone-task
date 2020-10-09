@@ -5,22 +5,22 @@ namespace App\Controller;
 use App\Entity\Note;
 use App\Entity\Label;
 use App\Form\NoteType;
+use App\Form\NewNoteType;
 use App\Repository\NoteRepository;
 use App\Repository\StatusRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-/**
- * @Route("/note")
- */
 class NoteController extends AbstractController
 {
     /**
      * Affiche les notes
      *
-     * @Route("/", name="note_index")
+     * @Route("/note", name="note_index")
      *
      * @return Response
      */
@@ -36,31 +36,33 @@ class NoteController extends AbstractController
 
     /**
      * crée une nouvelle note
-     * 
-     * @Route=("/new", name="note_new")
      *
+     * @Route("/note/new", name="note_new", methods={"GET", "POST"})
+     * 
+     * @param Request $request
+     * @param StatusRepository $statusRepository
+     * @param EntityManagerInterface $entityManager
      * @return Response
      */
-    public function new(EntityManagerInterface $manager, Request $request, StatusRepository $statusRepo)
+    public function new(Request $request, StatusRepository $statusRepository, EntityManagerInterface $entityManager)
     {
-        // Formulaire de création de note
         $note = new Note();
-        
-        $status = $statusRepo->findOneBy(['name' => 'On']);
+        $status = $statusRepository->findOneBy(['name' => 'On']);
 
-        $form = $this->createForm(NoteType::class, $note);
-        
+        $form = $this->createForm(NewNoteType::class, $note);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            dump($status);
             $note->setStatus($status);
-            $note->setCreatedAt(new \DateTime);
-            $manager->persist($note);
-            $manager->flush();
-
+            $note->setCreatedAt(new \DateTime());
+            
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($note);
+            $entityManager->flush();
+        
             return $this->redirectToRoute('note_index');
-        } 
+        }
 
         return $this->render('note/_new_note.html.twig', [
             'form' => $form->createView(),
@@ -78,26 +80,6 @@ class NoteController extends AbstractController
     {
         // récupération des notes par date "reminder"
         $notes = $noteRepo->findAllByDueDate();
-
-        return $this->render('note/index.html.twig', [
-            'notes' => $notes,
-        ]);
-    }
-
-    /**
-     * Affiche les notes avec labels
-     *
-     * @Route("/label/{name}", name="note_label")
-     *
-     * @return Response
-     */
-    public function label(Label $label, NoteRepository $noteRepo)
-    {
-        // récupération des notes par label
-        $notes = $noteRepo->findBy(
-            array('label' => $label, 'status' => 1),
-            array('createdAt' => 'DESC')
-        );
 
         return $this->render('note/index.html.twig', [
             'notes' => $notes,
@@ -136,6 +118,16 @@ class NoteController extends AbstractController
         return $this->render('note/index.html.twig', [
             'notes' => $notes,
         ]);
+    }
+
+    /**
+     * Supprime une note
+     * 
+     * @Route("/note/delete", name="note_delete")
+     */
+    public function delete()
+    {
+        # code...
     }
 
    

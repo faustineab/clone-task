@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Label;
 use App\Form\LabelType;
+use App\Repository\NoteRepository;
 use App\Repository\LabelRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,6 +26,33 @@ class LabelController extends AbstractController
         ]);
     }
 
+    /**
+     * Affiche les notes avec labels
+     *
+     * @Route("/label/{name}", name="note_label")
+     *
+     * @return Response
+     */
+    public function label(Label $label, NoteRepository $noteRepo)
+    {
+        // récupération des notes par label
+        $notes = $noteRepo->findBy(
+            array('label' => $label, 'status' => 1),
+            array('createdAt' => 'DESC')
+        );
+
+        return $this->render('note/index.html.twig', [
+            'notes' => $notes,
+        ]);
+    }
+
+    /**
+     * @Route("/label/new", name="label_new")
+     *
+     * @param EntityManagerInterface $manager
+     * @param Request $request
+     * @return void
+     */
     public function new(EntityManagerInterface $manager, Request $request)
     {
         // Formulaire de création de label

@@ -1,0 +1,49 @@
+<div class="card mb-4">
+    {{ form_start(form) }}
+    <div class="card-body">
+        <div class="collapse card-title" id="collapseForm">
+            {{ form_row(form.title, {'label': false}) }}
+        </div>
+
+        <div class="card-text" data-toggle="collapse" data-target="#collapseForm" aria-expanded="false"
+            aria-controls="collapseForm">
+            {{ form_row(form.content, {'label': false}) }}
+        </div>
+
+        <div class="card-text d-flex justify-content-between">
+            <div class="collapse" id="collapseForm">
+                <button class="btn btn-outline" type="button" data-toggle="collapse" data-target="#collapseDueDate"
+                    aria-expanded="false" aria-controls="collapseDueDate">
+                    <i class="far fa-calendar-alt"></i>
+                </button>
+                <button class="btn btn-outline" type="button" data-toggle="collapse" data-target="#collapsePicture"
+                    aria-expanded="false" aria-controls="collapsePicture">
+                    <i class="fas fa-image"></i>
+                </button>
+                <button class="btn btn-outline" type="button" data-toggle="collapse" data-target="#collapseLabel"
+                    aria-expanded="false" aria-controls="collapseLabel">
+                    <i class="fas fa-tag"></i>
+                </button>
+            </div>
+            <div class="collapse" id="collapseForm">
+                {{ form_row(form.save, {'label': 'Créer', 'attr': {'class': 'btn-dark'}}) }}
+            </div>
+        </div>
+
+        <div>
+            <div class="collapse" id="collapseDueDate">
+                {{ form_row(form.dueDate, {'label': false}) }}
+            </div>
+            <div class="collapse" id="collapsePicture">
+                {{ form_row(form.picture, {'label': false}) }}
+            </div>
+            <div class="collapse" id="collapseLabel">
+                {{ form_row(form.label, {'label': false}) }}
+            </div>
+        </div>
+    </div>
+
+    {{ form_errors(form) }}
+
+    {{ form_end(form) }}
+</div>

@@ -1,0 +1,27 @@
+<div class="modal fade" id="modalLabel" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalLabel">Modifier les libellés</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        {{ form_start(label_form) }}
+        <div class="row">
+        <div class="col-7">
+            {{ form_row(label_form.name, {'label': false}) }}
+        </div>
+        <div class="col">
+            {{ form_row(label_form.color, {'label': false}) }}
+        </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        {{ form_row(label_form.save, {'attr': {'class': 'btn btn-dark'}}) }}
+      </div>
+        {{ form_end(label_form) }}
+    </div>
+  </div>
+</div>

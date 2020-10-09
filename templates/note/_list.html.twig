@@ -1,0 +1,48 @@
+{% if notes|length > 0 %}
+{% for note in notes %}
+
+{% if note.label %}
+    <div class="card mb-3" style="background-color: {{ note.label.color }};">
+{% else %}
+    <div class="card mb-3">
+{% endif %}
+
+    {% if note.picture %}
+        <img src="{{ note.picture }}" class="card-img-top" alt="{{ note.title }}">
+    {% endif %}
+
+    {% if note.title %}
+        <div class="card-body">
+            <h5 class="card-title">{{ note.title }}</h5>
+        </div>
+    {% endif %}
+
+    {% if note.content %}
+        <div class="card-body">
+            <p class="card-text">{{ note.content }}</p>
+        </div>
+    {% endif %}
+
+    {% if note.label or note.dueDate %}
+        <div class="card-footer">
+        {% if note.dueDate %}
+            <a href="#" class="badge badge-pill badge-light"
+            ><i class="far fa-clock"></i>
+                {{ note.dueDate|date('d M y, H:i') }}</a>
+        {% endif %}
+
+            {% if note.label %}
+            <a href="#" class="badge badge-pill badge-light">{{ note.label.name }}</a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+    </div>
+
+
+
+{% endfor %}
+{% else %}
+
+    <p>Vous n'avez pas de notes à afficher !</p>
+{% endif %}

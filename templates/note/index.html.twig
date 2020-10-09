@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+{{ render(controller('App\\Controller\\NoteController::new')) }}
+{{ render(controller('App\\Controller\\LabelController::new')) }}
+
+{% include "note/_list.html.twig" %}
+
+{% endblock %}

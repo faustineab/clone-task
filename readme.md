@@ -2,5 +2,7 @@
  
 ## Clone de Google Keep
 
-Symfony 4
-Twig/Bootstrap
+Petite appli de création de notes
+
+*Symfony 4*
+*Twig/Bootstrap*

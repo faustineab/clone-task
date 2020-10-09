@@ -79,13 +79,17 @@ class NoteController extends AbstractController
      *
      * @return Response
      */
-    public function reminder(NoteRepository $noteRepo)
+    public function reminder(NoteRepository $noteRepo, LabelRepository $labelRepository)
     {
         // récupération des notes par date "reminder"
         $notes = $noteRepo->findAllByDueDate();
 
+        // récupération des labels
+        $labels = $labelRepository->findAll();
+        
         return $this->render('note/index.html.twig', [
             'notes' => $notes,
+            'labels' => $labels,
         ]);
     }
 
@@ -96,13 +100,17 @@ class NoteController extends AbstractController
      *
      * @return Response
      */
-    public function archive(NoteRepository $noteRepo)
+    public function archive(NoteRepository $noteRepo, LabelRepository $labelRepository)
     {
         // récupération des notes par label
         $notes = $noteRepo->findBy(['status' => 2]);
 
+        // récupération des labels
+        $labels = $labelRepository->findAll();
+        
         return $this->render('note/index.html.twig', [
             'notes' => $notes,
+            'labels' => $labels,
         ]);
     }
 
@@ -113,24 +121,31 @@ class NoteController extends AbstractController
      *
      * @return Response
      */
-    public function trash(NoteRepository $noteRepo)
+    public function trash(NoteRepository $noteRepo, LabelRepository $labelRepository)
     {
         // récupération des notes par label
         $notes = $noteRepo->findBy(['status' => 3]);
 
+        // récupération des labels
+        $labels = $labelRepository->findAll();
+        
         return $this->render('note/index.html.twig', [
             'notes' => $notes,
+            'labels' => $labels,
         ]);
     }
 
     /**
      * Supprime une note
      * 
-     * @Route("/note/delete", name="note_delete")
+     * @Route("/note/{id}/delete", name="note_delete")
      */
-    public function delete()
+    public function delete(Note $note, EntityManagerInterface $manager)
     {
-        # code...
+        $manager->remove($note);
+        $manager->flush();
+
+        return $this->redirectToRoute('note_index');
     }
 
    

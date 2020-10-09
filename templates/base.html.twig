@@ -36,26 +36,25 @@
                         aria-describedby="basic-addon1">
                 </div>
             </form>
-            <div>
+            {# <div>
                 <button type="button" class="btn"><i class="fas fa-redo-alt"></i></button>
                 <button type="button" class="btn"><i class="fas fa-columns"></i></button>
                 <button type="button" class="btn"><i class="fas fa-stream"></i></button>
                 <button type="button" class="btn"><i class="fas fa-cog"></i></button>
-            </div>
-            <a href="#" class="avatar">F</a>
+            </div> #}
+            {# <a href="#" class="avatar">F</a> #}
         </nav>
     </header>
 
     <div class="container mt-3">
-    {# {{ render(controller('App\\Controller\\LabelController::index')) }} #}
-
-
         <div class="row">
             <div class="col-3">
                 <nav class="nav flex-column sidebar">
                     <a class="nav-link text-dark" href="{{ path('home') }}"><i class="fas fa-lightbulb"></i> Notes</a>
                     <a class="nav-link text-dark" href="{{ path('reminder') }}"><i class="fas fa-bell"></i> Rappel</a>
-                    
+                    {% for label in labels %}
+                    <a class="nav-link text-dark" href="{{ path('note_label', {'name': label.name}) }}"><i class="fas fa-tag"></i> {{ label.name }}</a>
+                    {% endfor %}
                     <a class="nav-link text-dark" data-toggle="modal" data-target="#modalLabel" href=""><i class="fas fa-pen"></i> Modifier les libellés</a>
                     <a class="nav-link text-dark" href="{{ path('archive') }}"><i class="fas fa-archive"></i> Archives</a>
                     <a class="nav-link text-dark" href="{{ path('trash') }}"><i class="fas fa-trash"></i> Corbeille</a>

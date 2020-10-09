@@ -15,19 +15,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 class LabelController extends AbstractController
 {
     /**
-     * @Route("/label", name="label")
-     */
-    public function index(LabelRepository $labelRepository)
-    {
-        // récupération des labels
-        $labels = $labelRepository->findAll();
-
-        return $this->render('label/index.html.twig', [
-            'labels' => $labels,
-        ]);
-    }
-
-    /**
      * @Route("/label/new", name="label_new")
      *
      * @return Response
@@ -49,11 +36,11 @@ class LabelController extends AbstractController
         }
 
         return $this->render('note/_new_label.html.twig', [
-            'form' => $labelForm->createView()
+            'form' => $labelForm->createView(),
         ]);
     }
 
-    
+
     /**
      * Affiche les notes avec labels
      *
@@ -61,8 +48,11 @@ class LabelController extends AbstractController
      *
      * @return Response
      */
-    public function label(Label $label, NoteRepository $noteRepo)
+    public function label(Label $label, NoteRepository $noteRepo, LabelRepository $labelRepository)
     {
+        // récupération des labels
+        $labels = $labelRepository->findAll();
+        
         // récupération des notes par label
         $notes = $noteRepo->findBy(
             array('label' => $label, 'status' => 1),
@@ -71,6 +61,7 @@ class LabelController extends AbstractController
 
         return $this->render('note/index.html.twig', [
             'notes' => $notes,
+            'labels' => $labels
         ]);
     }
 

@@ -8,20 +8,20 @@
         </button>
       </div>
       <div class="modal-body">
-        {{ form_start(label_form) }}
+        {{ form_start(form, {'action': path('label_new')}) }}
         <div class="row">
-        <div class="col-7">
-            {{ form_row(label_form.name, {'label': false}) }}
-        </div>
-        <div class="col">
-            {{ form_row(label_form.color, {'label': false}) }}
-        </div>
+          <div class="col-7">
+            {{ form_row(form.name, {'label': false}) }}
+          </div>
+          <div class="col">
+            {{ form_row(form.color, {'label': false}) }}
+          </div>
         </div>
       </div>
       <div class="modal-footer">
-        {{ form_row(label_form.save, {'attr': {'class': 'btn btn-dark'}}) }}
+        {{ form_row(form.save, {'attr': {'class': 'btn btn-dark'}}) }}
       </div>
-        {{ form_end(label_form) }}
+      {{ form_end(form) }}
     </div>
   </div>
 </div>

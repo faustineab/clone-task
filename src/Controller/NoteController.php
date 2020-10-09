@@ -4,15 +4,14 @@ namespace App\Controller;
 
 use App\Entity\Note;
 use App\Entity\Label;
-use App\Form\NoteType;
 use App\Form\NewNoteType;
+use App\Repository\LabelRepository;
 use App\Repository\NoteRepository;
 use App\Repository\StatusRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class NoteController extends AbstractController
@@ -24,13 +23,17 @@ class NoteController extends AbstractController
      *
      * @return Response
      */
-    public function index(NoteRepository $noteRepo)
+    public function index(NoteRepository $noteRepo, LabelRepository $labelRepository)
     {
         // récupération des notes par date de création
         $notes = $noteRepo->findBy(['status' => 1], ['createdAt' => 'DESC']);
 
+        // récupération des labels
+        $labels = $labelRepository->findAll();
+
         return $this->render('note/index.html.twig', [
             'notes' => $notes,
+            'labels' => $labels
         ]);
     }
 

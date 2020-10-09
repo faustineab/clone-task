@@ -66,6 +66,10 @@
             </div>
         </div>
     </div>
+
+{# {{ render(path('label_new')) }} #}
+{{ render(controller('App\\Controller\\LabelController::new')) }}
+
     {% block javascripts %}{% endblock %}
 
     <!-- Optional JavaScript -->

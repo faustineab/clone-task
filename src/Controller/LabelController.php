@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class LabelController extends AbstractController
 {
@@ -26,6 +27,33 @@ class LabelController extends AbstractController
         ]);
     }
 
+    /**
+     * @Route("/label/new", name="label_new")
+     *
+     * @return Response
+     */
+    public function new(EntityManagerInterface $manager, Request $request)
+    {
+        // Formulaire de création de label
+        $label = new Label();
+        
+        $labelForm = $this->createForm(LabelType::class, $label);
+        
+        $labelForm->handleRequest($request);
+        
+        if ($labelForm->isSubmitted() && $labelForm->isValid()) {
+            $manager->persist($label);
+            $manager->flush();
+
+            return $this->redirectToRoute('note_index');
+        }
+
+        return $this->render('note/_new_label.html.twig', [
+            'form' => $labelForm->createView()
+        ]);
+    }
+
+    
     /**
      * Affiche les notes avec labels
      *
@@ -46,28 +74,4 @@ class LabelController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/label/new", name="label_new")
-     *
-     * @param EntityManagerInterface $manager
-     * @param Request $request
-     * @return void
-     */
-    public function new(EntityManagerInterface $manager, Request $request)
-    {
-        // Formulaire de création de label
-        $label = new Label();
-        $labelForm = $this->createForm(LabelType::class, $label);
-        $labelForm->handleRequest($request);
-        if ($labelForm->isSubmitted() && $labelForm->isValid()) {
-            $manager->persist($label);
-            $manager->flush();
-
-            return $this->redirectToRoute('note_index');
-        }
-
-        return $this->render('note/_new_label.html.twig', [
-            'label_form' => $labelForm->createView()
-        ]);
-    }
 }

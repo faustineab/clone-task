@@ -5,8 +5,9 @@ namespace App\Controller;
 use App\Entity\Note;
 use App\Entity\Label;
 use App\Form\NewNoteType;
-use App\Repository\LabelRepository;
+use App\Service\MessageGenerator;
 use App\Repository\NoteRepository;
+use App\Repository\LabelRepository;
 use App\Repository\StatusRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,17 +24,10 @@ class NoteController extends AbstractController
      *
      * @return Response
      */
-    public function index(NoteRepository $noteRepo, LabelRepository $labelRepository)
+    public function index(NoteRepository $noteRepo)
     {
-        // récupération des notes par date de création
-        $notes = $noteRepo->findBy(['status' => 1], ['createdAt' => 'DESC']);
-
-        // récupération des labels
-        $labels = $labelRepository->findAll();
-
         return $this->render('note/index.html.twig', [
-            'notes' => $notes,
-            'labels' => $labels
+            'notes' => $noteRepo->findByStatus(1),
         ]);
     }
 
@@ -79,17 +73,13 @@ class NoteController extends AbstractController
      *
      * @return Response
      */
-    public function reminder(NoteRepository $noteRepo, LabelRepository $labelRepository)
+    public function reminder(NoteRepository $noteRepo)
     {
         // récupération des notes par date "reminder"
         $notes = $noteRepo->findAllByDueDate();
-
-        // récupération des labels
-        $labels = $labelRepository->findAll();
         
         return $this->render('note/index.html.twig', [
             'notes' => $notes,
-            'labels' => $labels,
         ]);
     }
 
@@ -100,18 +90,28 @@ class NoteController extends AbstractController
      *
      * @return Response
      */
-    public function archive(NoteRepository $noteRepo, LabelRepository $labelRepository)
+    public function archive(NoteRepository $noteRepo)
     {
-        // récupération des notes par label
-        $notes = $noteRepo->findBy(['status' => 2]);
-
-        // récupération des labels
-        $labels = $labelRepository->findAll();
+        // récupération des notes par statut
+        $notes = $noteRepo->findByStatus(2);
         
         return $this->render('note/index.html.twig', [
             'notes' => $notes,
-            'labels' => $labels,
         ]);
+    }
+    
+    /**
+     * Supprime une note
+     * 
+     * @Route("/note/{id}/delete", name="note_delete")
+     */
+    public function delete(Note $note, StatusRepository $statusRepository, EntityManagerInterface $manager)
+    {
+        $note->setStatus($statusRepository->findOneBy(['name' => 'Trash']));
+        $manager->persist($note);
+        $manager->flush();
+
+        return $this->redirectToRoute('trash');
     }
 
     /**
@@ -121,32 +121,13 @@ class NoteController extends AbstractController
      *
      * @return Response
      */
-    public function trash(NoteRepository $noteRepo, LabelRepository $labelRepository)
+    public function trash(NoteRepository $noteRepo)
     {
-        // récupération des notes par label
-        $notes = $noteRepo->findBy(['status' => 3]);
-
-        // récupération des labels
-        $labels = $labelRepository->findAll();
+        // récupération des notes par statut
+        $notes = $noteRepo->findByStatus(3);
         
         return $this->render('note/index.html.twig', [
             'notes' => $notes,
-            'labels' => $labels,
         ]);
     }
-
-    /**
-     * Supprime une note
-     * 
-     * @Route("/note/{id}/delete", name="note_delete")
-     */
-    public function delete(Note $note, EntityManagerInterface $manager)
-    {
-        $manager->remove($note);
-        $manager->flush();
-
-        return $this->redirectToRoute('note_index');
-    }
-
-   
 }

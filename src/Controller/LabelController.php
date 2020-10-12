@@ -10,7 +10,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class LabelController extends AbstractController
 {
@@ -48,20 +47,16 @@ class LabelController extends AbstractController
      *
      * @return Response
      */
-    public function label(Label $label, NoteRepository $noteRepo, LabelRepository $labelRepository)
+    public function label(Label $label, NoteRepository $noteRepo)
     {
-        // récupération des labels
-        $labels = $labelRepository->findAll();
-        
         // récupération des notes par label
         $notes = $noteRepo->findBy(
-            array('label' => $label, 'status' => 1),
-            array('createdAt' => 'DESC')
+            ['label' => $label, 'status' => 1],
+            ['createdAt' => 'DESC']
         );
 
         return $this->render('note/index.html.twig', [
-            'notes' => $notes,
-            'labels' => $labels
+            'notes' => $notes
         ]);
     }
 

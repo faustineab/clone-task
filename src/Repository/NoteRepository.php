@@ -58,6 +58,20 @@ class NoteRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+
+    /**
+     * @return Note[] Returns an array of Note objects
+     */
+    public function findByStatus($status)
+    {
+        return $this->createQueryBuilder('n')
+            ->andWhere('n.status = :val')
+            ->setParameter('val', $status)
+            ->orderBy('n.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
     
     // /**
     //  * @return Note[] Returns an array of Note objects
